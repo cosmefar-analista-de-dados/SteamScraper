@@ -1,17 +1,19 @@
-from selectolax.parser import HTMLParser
 from utils.extract import extract_full_body_html
-
-URL = "https://store.steampowered.com/specials"
+from selectolax.parser import HTMLParser
+from config.tools import get_config
 
 if __name__ == '__main__':
 
+    config = get_config()
+
     html = extract_full_body_html(
-        from_url = URL,
-        wait_for = 'div[class*="salepreviewwidgets_StoreSaleWidgetContainer"]')
+        from_url = config.get('url'),
+        wait_for = config.get('container').get('selector')
+    )
 
     tree = HTMLParser(html)
     # this means contains
-    divs = tree.css('div[class*="salepreviewwidgets_StoreSaleWidgetContainer"]')
+    divs = tree.css(config.get('container').get('selector'))
 
     for div in divs:
         title = div.css_first('a div[class*="StoreSaleWidgetTitle"]').text()
